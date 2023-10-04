@@ -65,7 +65,7 @@ export default function Home() {
       lyrics: ["hello"],
     },
   ];
-  const [selectedTrack, setSelectedTrack] = useState(songList[0]);
+  const [selectedTrack, setSelectedTrack] = useState(songList[1]);
 
   const handleFilesUpload = (files) => {
     setUploadedFiles(files);

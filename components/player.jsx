@@ -159,7 +159,7 @@ function Player({ uploadedFiles, selectedTrack, setSelectedTrack }) {
 
   return (
     <div className="flex flex-col items-center w-full  md:flex-row">
-      <div className="flex flex-col justify-center items-center w-[300px] h-[300px] md:h-fit md:w-[600px] shadow-2xl border-4 md:flex md:items-left">
+      <div className="flex flex-col justify-center items-center w-[300px] h-[300px] md:h-[600px] md:w-[600px] shadow-2xl border-4 md:flex md:items-left">
         <Lyrics
           selectedTrackLyrics={currentAudioFile.lyrics}
           lyricsClass={lyricsClass}
