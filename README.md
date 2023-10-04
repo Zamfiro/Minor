@@ -1,7 +1,7 @@
 # Minor
 A semi-minimalistic music player 
 
-###Try the demo - https://minor-beryl.vercel.app/
+### Try the demo - https://minor-beryl.vercel.app/
 
 #### Built with:
 >+ Next.js (https://nextjs.org/)
