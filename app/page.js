@@ -11,6 +11,7 @@ import svrati from "@/public/music/Svrati.mp3";
 import polaSedam from "@/public/music/PolaSedam.mp3";
 import lazuTe from "@/public/music/LazuTe.mp3";
 import future from "@/public/music/712PM.mp3";
+import zera from "@/public/music/TvojeIme.mp3"
 
 import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
@@ -63,6 +64,15 @@ export default function Home() {
       coverArt: "d1bd3da6698dd5eafc5b4514317039c4/500x500.jpg",
       explicit: true,
       lyrics: ["hello"],
+    },
+    {
+      id: 5,
+      name: "Tvoje ime",
+      artist: "Zera x Henny",
+      path: zera,
+      coverArt: "aad9e2d7874795bdfea9034cd843aa2d/500x500.jpg",
+      explicit: false,
+      lyrics: [],
     },
   ];
   const [selectedTrack, setSelectedTrack] = useState(songList[1]);
@@ -117,6 +127,7 @@ export default function Home() {
           height={1000}
           alt="Background"
           objectFit="cover"
+          priority={true}
         ></Image>
       </div>
       <section className="inline-block w-full min-h-screen justify-between px-10 md:px-24">
@@ -128,7 +139,7 @@ export default function Home() {
             <div className="flex items-center h-screen scroll-hidden p-10">
           <Player uploadedFiles={songList}></Player>
           </div>
-        )} */}
+        )} */}  {/*TODO: Should probably delete this but won't*/}
         <div className="flex items-center min-h-screen scroll-hidden ">
           <Player
             selectedTrack={selectedTrack}
