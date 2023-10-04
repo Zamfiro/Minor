@@ -11,10 +11,13 @@ import {
   LyricsOutlined,
   Shuffle,
 } from "@mui/icons-material";
+
+import AudioFileIcon from '@mui/icons-material/AudioFile';
 import classNames from "tailwindcss-classnames";
 import WaveSurfer from "wavesurfer.js";
 import Image from "next/image";
 import Lyrics from "./lyrics";
+
 
 function Player({ uploadedFiles, selectedTrack, setSelectedTrack }) {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -33,11 +36,33 @@ function Player({ uploadedFiles, selectedTrack, setSelectedTrack }) {
   };
 
   const [isShuffling, setIsShuffling] = useState(false);
+  const shuffleQueue = useRef([]);
+
+  function generateRandTrack() {
+    const i = Math.floor(Math.random() * uploadedFiles.length);
+    const randomTrack = uploadedFiles.at(i);
+
+    return randomTrack;
+  }
 
   const handleNextTrack = useCallback(() => {
-    let nextTrack = uploadedFiles.find(
-      (file) => file.id === selectedTrack.id + 1
-    );
+    let nextTrack = null;
+
+    if (!isShuffling) {
+      nextTrack = uploadedFiles.find(
+        (file) => file.id === selectedTrack.id + 1
+      );
+    } else {
+      let randomTrack = generateRandTrack();
+
+      if (!shuffleQueue.current.includes(randomTrack)) {
+        randomTrack = generateRandTrack();
+      }
+
+      shuffleQueue.current.push(randomTrack);
+
+      nextTrack = shuffleQueue.current.at(-1);
+    }
 
     if (currentAudioFile.id === uploadedFiles.at(-1).id) {
       nextTrack = uploadedFiles.find((file) => file.id === 0);
@@ -47,7 +72,7 @@ function Player({ uploadedFiles, selectedTrack, setSelectedTrack }) {
     } else {
       setSelectedTrack(nextTrack);
     }
-  }, [currentAudioFile.id, selectedTrack.id, setSelectedTrack, uploadedFiles]);
+  }, [currentAudioFile.id, uploadedFiles, selectedTrack.id, setSelectedTrack]);
 
   useEffect(() => {
     if (!audioRef.current) return;
@@ -92,21 +117,24 @@ function Player({ uploadedFiles, selectedTrack, setSelectedTrack }) {
     return () => {
       wavesurfer.current.destroy();
       wavesurfer.current = null;
-      
     };
   }, [currentAudioFile, handleNextTrack]);
 
-  // const handlePlayPause = () => {
-  //   wavesurfer.current.playPause();
-  //   setIsPlaying(!isPlaying);
-  // };
-
   const handlePreviousTrack = () => {
-    let nextTrack = {};
+    let nextTrack = null;
 
-    nextTrack = uploadedFiles.find((file) => file.id === selectedTrack.id - 1);
+    if (!isShuffling) {
+      nextTrack = uploadedFiles.find(
+        (file) => file.id === selectedTrack.id - 1
+      );
+    } else {
+      const index = shuffleQueue.current.findIndex(
+        (file) => file === currentAudioFile
+      );
+      nextTrack = shuffleQueue.current.at(index - 1);
+    }
 
-    if (currentAudioFile.id === uploadedFiles.at(0).id) {
+    if (currentAudioFile.id === uploadedFiles.at(0).id && !isShuffling) {
       return;
     } else {
       setSelectedTrack(nextTrack);
@@ -131,7 +159,7 @@ function Player({ uploadedFiles, selectedTrack, setSelectedTrack }) {
 
   return (
     <div className="flex flex-col items-center w-full  md:flex-row">
-      <div className="flex flex-col justify-center items-center w-full md:h-fit md:w-fit shadow-2xl border-4 md:flex md:items-left">
+      <div className="flex flex-col justify-center items-center w-[300px] h-[300px] md:h-fit md:w-[600px] shadow-2xl border-4 md:flex md:items-left">
         <Lyrics
           selectedTrackLyrics={currentAudioFile.lyrics}
           lyricsClass={lyricsClass}
@@ -139,7 +167,7 @@ function Player({ uploadedFiles, selectedTrack, setSelectedTrack }) {
 
         {currentAudioFile.coverArt === "" ? (
           <div className={lyricsShown ? "blur-sm transition-all" : undefined}>
-            <AudioFile className="text-9xl h-[390px] w-[390px]" />
+            <AudioFile className="text-9xl" />
           </div>
         ) : (
           <div
@@ -227,7 +255,10 @@ function Player({ uploadedFiles, selectedTrack, setSelectedTrack }) {
                 className={`items-center justify-self-left md:hover:bg-gray-500 rounded-md p-3 ${
                   isShuffling ? "bg-gray-500" : "bg-transparen"
                 }`}
-                onClick={() => setIsShuffling(!isShuffling)}
+                onClick={() => {
+                  setIsShuffling(!isShuffling);
+                  shuffleQueue.current = [];
+                }}
               >
                 <Shuffle className="text-2xl" />
               </div>

@@ -12,6 +12,9 @@ import polaSedam from "@/public/music/PolaSedam.mp3";
 import lazuTe from "@/public/music/LazuTe.mp3";
 import future from "@/public/music/712PM.mp3";
 
+import { Inter } from "next/font/google";
+const inter = Inter({ subsets: ["latin"] });
+
 const Player = dynamic(() => import("@/components/player"), { ssr: false });
 
 export default function Home() {
@@ -102,17 +105,18 @@ export default function Home() {
   
 
   return (
-    <main onScroll={handleScroll}>
+    <main onScroll={handleScroll} className={`${inter.className}`}>
       <div
         className="
       flex w-full h-screen justify-between absolute -z-10 blur-2xl opacity-30 lg:hidden"
       >
         <Image
           loader={coverLoader}
-          src={selectedTrack.coverArt !== "" ? (selectedTrack.coverArt) : undefined}
+          src={selectedTrack.coverArt}
           width={1000}
           height={1000}
           alt="Background"
+          objectFit="cover"
         ></Image>
       </div>
       <section className="inline-block w-full min-h-screen justify-between px-10 md:px-24">
@@ -121,7 +125,7 @@ export default function Home() {
           <AudioUpload onFilesUpload={handleFilesUpload}></AudioUpload>
           </div>
           ) : (
-        <div className="flex items-center h-screen scroll-hidden p-10">
+            <div className="flex items-center h-screen scroll-hidden p-10">
           <Player uploadedFiles={songList}></Player>
           </div>
         )} */}
@@ -136,7 +140,7 @@ export default function Home() {
       <div
         className="flex absolute justify-center z-30 bottom-5 text-center w-full overflow-hidden"
         onClick={ScrollToPlaylist}
-      >
+        >
         <KeyboardArrowUp className="text-5xl" />
       </div>
       <section className="min-h-screen px-10 md:px-24">
@@ -144,7 +148,7 @@ export default function Home() {
           uploadedFiles={songList}
           selectedTrack={selectedTrack}
           setSelectedTrack={setSelectedTrack}
-        ></Playlist>
+          ></Playlist>
       </section>
     </main>
   );
