@@ -28,6 +28,7 @@ function Playlist({ uploadedFiles, selectedTrack, setSelectedTrack }) {
                   {file.explicit && <Explicit className="text-gray-500"/> }
                   <br />{" "}
                   <span className="text-sm opacity-30">{file.artist}</span>
+                  {/* hello */}
                 </div>
               </div>
             </div>
